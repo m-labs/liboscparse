@@ -15,13 +15,8 @@
  */
 
 #include "lop_types_internal.h"
-#include "lo/lo.h"
 
-#ifdef _MSC_VER
-lop_timetag lop_get_tt_immediate() { lop_timetag tt = {0U,1U}; return tt; }
-#else
 #include <sys/time.h>
-#endif
 #include <time.h>
 
 #define JAN_1970 0x83aa7e80      /* 2208988800 1970 - 1900 in seconds */
@@ -34,25 +29,9 @@ double lop_timetag_diff(lop_timetag a, lop_timetag b)
 
 void lop_timetag_now(lop_timetag *t)
 {
-#ifdef WIN32
-    /* 
-        FILETIME is the time in units of 100 nsecs from 1601-Jan-01
-        1601 and 1900 are 9435484800 seconds apart.
-    */
-    FILETIME ftime;
-    double dtime;
-    GetSystemTimeAsFileTime(&ftime);
-    dtime = 
-        ((ftime.dwHighDateTime*4294967296.e-7)-9435484800.)+
-        (ftime.dwLowDateTime*1.e-7);
-
-	t->sec = (uint32_t)dtime;
-	t->frac = (uint32_t)((dtime-t->sec)*4294967296.);
-#else
-    struct timeval tv;
+	struct timeval tv;
 
 	gettimeofday(&tv, NULL);
 	t->sec = tv.tv_sec + JAN_1970;
 	t->frac = tv.tv_usec * 4294.967295;
-#endif
 }

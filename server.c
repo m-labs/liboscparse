@@ -25,26 +25,7 @@
 #include <float.h>
 #include <sys/types.h>
 
-#ifdef _MSC_VER
-#define _WINSOCKAPI_
-#define snprintf _snprintf
-#else
 #include <unistd.h>
-#endif
-
-#ifdef WIN32
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#define EADDRINUSE WSAEADDRINUSE
-#else
-#include <netdb.h>
-#include <sys/socket.h>
-#ifdef HAVE_POLL
-#include <sys/poll.h>
-#endif
-#include <sys/un.h>
-#include <arpa/inet.h>
-#endif
 
 #ifdef WIN32
 #define geterror() WSAGetLastError()
@@ -54,8 +35,7 @@
 
 #include "lop_types_internal.h"
 #include "lop_internal.h"
-#include "lo/lo.h"
-#include "lo/lop_throw.h"
+#include "lop/lop_throw.h"
 
 #define LOP_HOST_SIZE 1024
 

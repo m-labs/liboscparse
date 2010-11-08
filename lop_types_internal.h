@@ -1,51 +1,13 @@
 #ifndef LOP_TYPES_H
 #define LOP_TYPES_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#include <sys/types.h>
 
-#ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
-#endif
-
-#ifdef HAVE_POLL
-#include <poll.h>
-#endif
-
-#ifdef WIN32
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#else
-#include <netdb.h>
-#endif
-
-#ifdef _MSC_VER
-typedef SSIZE_T ssize_t;
-typedef unsigned __int64 uint64_t;
-typedef unsigned __int32 uint32_t;
-typedef __int64 int64_t;
-typedef __int32 int32_t;
-#endif
-
-#include <pthread.h>
-
-#include "lo/lop_osc_types.h"
+#include "lop/lop_osc_types.h"
 
 typedef void (*lop_err_handler)(int num, const char *msg, const char *path);
 
 struct _lop_method;
-
-typedef struct _lop_address {
-	char            *host;
-	int              socket;
-	char            *port;
-	int              protocol;
-	struct addrinfo *ai;
-	int              errnum;
-	const char      *errstr;
-	int              ttl;
-} *lop_address;
 
 typedef struct _lop_blob {
 	uint32_t  size;
@@ -59,7 +21,6 @@ typedef struct _lop_message {
 	void      *data;
 	size_t     datalen;
 	size_t     datasize;
-	lop_address source;
         lop_arg   **argv;
         /* timestamp from bundle (LOP_TT_IMMEDIATE for unbundled messages) */
         lop_timetag ts;
@@ -78,7 +39,6 @@ typedef struct _lop_method {
 } *lop_method;
 
 typedef struct _lop_server {
-	struct addrinfo         *ai;
 	lop_method                first;
 	lop_err_handler           err_h;
 	int	 	         port;
@@ -86,23 +46,7 @@ typedef struct _lop_server {
 	char                   	*path;
 	int            	         protocol;
 	void		        *queued;
-	struct sockaddr_storage  addr;
-	socklen_t 	         addr_len;
-	int                  sockets_len;
-	int                  sockets_alloc;
-#ifdef HAVE_POLL
-	struct pollfd        *sockets;
-#else
-	struct { int fd; }   *sockets;
-#endif
 } *lop_server;
-
-typedef struct _lop_server_thread {
-lop_server    s;
-	pthread_t    thread;
-	volatile int active;
-	volatile int done;
-} *lop_server_thread;
 
 typedef struct _lop_bundle {
 	size_t      size;
@@ -131,9 +75,4 @@ typedef union {
     lop_timetag tt;
 } lop_pcast64;
 
-extern struct lop_cs {
-	int udp;
-	int tcp;
-} lop_client_sockets;
-	
 #endif

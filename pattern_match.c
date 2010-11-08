@@ -71,8 +71,6 @@
  * Initial revision
  */
 
-#include "lo/lo.h"
-
 #ifndef NEGATE
 #define NEGATE  '!'
 #endif
