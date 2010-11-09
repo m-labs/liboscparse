@@ -34,6 +34,7 @@
 
 static void dispatch_method(lop_server s, const char *path,
     lop_message msg);
+static void dispatch_queued(lop_server s);
 static void queue_data(lop_server s, lop_timetag ts, const char *path,
     lop_message msg);
 static int lop_can_coerce(char a, char b);
@@ -77,9 +78,17 @@ void lop_server_free(lop_server s)
 
 int lop_server_dispatch_data(lop_server s, void *data, size_t size)
 {
-    int result = 0;
-    char *path = data;
-    ssize_t len = lop_validate_string(data, size);
+    int result;
+    char *path;
+    ssize_t len;
+    
+    dispatch_queued(s);
+    if (size == 0)
+        return 0;
+    
+    result = 0;
+    path = data;
+    len = lop_validate_string(data, size);
     if (len < 0) {
         lop_throw(s, -len, "Invalid message path", NULL);
         return len;
@@ -332,21 +341,14 @@ static void queue_data(lop_server s, lop_timetag ts, const char *path,
     ins->next = NULL;
 }
 
-static int dispatch_queued(lop_server s)
+static void dispatch_queued(lop_server s)
 {
     queued_msg_list *head = s->queued;
     queued_msg_list *tailhead;
     lop_timetag disp_time;
 
-    if (!head) {
-	lop_throw(s, LOP_INT_ERR, "attempted to dispatch with empty queue",
-		 "timeout");
-	return 1;
-    }
-
-    disp_time = head->ts;
-
-    do {
+    lop_timetag_now(&disp_time);
+    while (head && lop_timetag_diff(head->ts, disp_time) < FLT_EPSILON) {
         char *path;
         lop_message msg;
 	tailhead = head->next;
@@ -359,9 +361,7 @@ static int dispatch_queued(lop_server s)
 
 	s->queued = tailhead;
 	head = tailhead;
-    } while (head && lop_timetag_diff(head->ts, disp_time) < FLT_EPSILON);
-
-    return 0;
+    }
 }
 
 lop_method lop_server_add_method(lop_server s, const char *path,
