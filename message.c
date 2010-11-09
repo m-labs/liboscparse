@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <inttypes.h>
 #include <math.h>
 
 #include "lop_types_internal.h"
@@ -915,7 +916,7 @@ void lop_arg_pp_internal(lop_type type, void *data, int bigendian)
 
     switch (type) {
     case LOP_INT32:
-	printf("%d", val32.i);
+	printf("%"PRId32, val32.i);
 	break;
     
     case LOP_FLOAT:
@@ -929,9 +930,9 @@ void lop_arg_pp_internal(lop_type type, void *data, int bigendian)
     case LOP_BLOB:
 	printf("[");
 	if (val32.i > 12) {
-	    printf("%d byte blob", val32.i);
+	    printf("%"PRId32" byte blob", val32.i);
 	} else {
-	    printf("%db ", val32.i);
+	    printf("%"PRId32"b ", val32.i);
 	    for (i=0; i<val32.i; i++) {
 		printf("0x%02x", *((char *)(data) + 4 + i));
 		if (i+1 < val32.i) printf(" ");
@@ -945,7 +946,7 @@ void lop_arg_pp_internal(lop_type type, void *data, int bigendian)
 	break;
     
     case LOP_TIMETAG:
-	printf("%08x.%08x", val64.tt.sec, val64.tt.frac);
+	printf("%08"PRIx32".%08"PRIx32, val64.tt.sec, val64.tt.frac);
 	break;
     
     case LOP_DOUBLE:
