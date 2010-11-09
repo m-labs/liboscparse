@@ -120,12 +120,7 @@ typedef union {
 
 /** \brief A timetag constant representing "now". */
 /* Note: No struct literals in MSVC */
-#ifdef _MSC_VER
-lop_timetag lop_get_tt_immediate();
-#define LOP_TT_IMMEDIATE lop_get_tt_immediate()
-#else
 #define LOP_TT_IMMEDIATE ((lop_timetag){0U,1U})
-#endif
 
 /** @} */
 

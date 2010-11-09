@@ -6,6 +6,7 @@
 #include "lop/lop_osc_types.h"
 
 typedef void (*lop_err_handler)(int num, const char *msg, const char *path);
+typedef void (*lop_send_handler)(const char *msg, size_t len, void *arg);
 
 struct _lop_method;
 
@@ -39,13 +40,11 @@ typedef struct _lop_method {
 } *lop_method;
 
 typedef struct _lop_server {
-	lop_method                first;
-	lop_err_handler           err_h;
-	int	 	         port;
-	char                   	*hostname;
-	char                   	*path;
-	int            	         protocol;
-	void		        *queued;
+	lop_method first;
+	lop_err_handler err_h;
+	void *queued;
+	lop_send_handler send_h;
+	void *send_h_arg;
 } *lop_server;
 
 typedef struct _lop_strlist {

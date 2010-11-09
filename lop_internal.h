@@ -1,10 +1,6 @@
 #ifndef LOP_INTERNAL_H
 #define LOP_INTERNAL_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <lop/lop_osc_types.h>
 
 /**

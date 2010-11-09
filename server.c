@@ -14,10 +14,6 @@
  *  $Id$
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -35,8 +31,6 @@
 #include "lop/lop_lowlevel.h"
 #include "lop/lop_endian.h"
 
-#define LOP_HOST_SIZE 1024
-
 static void dispatch_method(lop_server s, const char *path,
     lop_message msg);
 static void queue_data(lop_server s, lop_timetag ts, const char *path,
@@ -50,6 +44,35 @@ typedef struct {
     lop_message msg;
     void *next;
 } queued_msg_list;
+
+lop_server lop_server_new(lop_err_handler err_h, lop_send_handler send_h, void *send_h_arg)
+{
+    lop_server s;
+    
+    s = calloc(1, sizeof(struct _lop_server));
+    if (!s) return 0;
+    
+    s->err_h = err_h;
+    s->send_h = send_h;
+    s->send_h_arg = send_h_arg;
+    
+    return s;
+}
+
+void lop_server_free(lop_server s)
+{
+    lop_method it;
+    lop_method next;
+    
+#warning free s->queued ?
+    for (it = s->first; it; it = next) {
+        next = it->next;
+        free((char *)it->path);
+        free((char *)it->typespec);
+        free(it);
+    }
+    free(s);
+}
 
 int lop_server_dispatch_data(lop_server s, void *data, size_t size)
 {

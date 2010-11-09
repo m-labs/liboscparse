@@ -342,7 +342,7 @@ lop_hires lop_hires_val(lop_type type, lop_arg *p);
  * error in messge reception or server creation. Pass NULL if you do not want
  * error handling.
  */
-lop_server lop_server_new(lop_err_handler err_h);
+lop_server lop_server_new(lop_err_handler err_h, lop_send_handler send_h, void *send_h_arg);
 
 /**
  * \brief Free up memory used by the lop_server object
