@@ -23,16 +23,9 @@
 extern "C" {
 #endif
 
-/* \brief Maximum length of UDP messages in bytes
+/* \brief Maximum length of messages in bytes
  */
 #define LOP_MAX_MSG_SIZE 32768
-
-/* \brief A set of macros to represent different communications transports
- */
-#define LOP_DEFAULT 0x0
-#define LOP_UDP     0x1
-#define LOP_UNIX    0x2
-#define LOP_TCP     0x4
 
 /* an internal value, ignored in transmission but check against LOP_MARKER in the
  * argument list. Used to do primitive bounds checking */

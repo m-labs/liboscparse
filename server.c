@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <strings.h>
 #include <errno.h>
 #include <float.h>
 #include <sys/types.h>
@@ -165,7 +166,128 @@ double lop_server_next_event_delay(lop_server s)
 static void dispatch_method(lop_server s, const char *path,
     lop_message msg)
 {
+    char *types = msg->types + 1;
+    int argc = strlen(types);
+    lop_arg **argv = msg->argv;
+    lop_method it;
+    int ret = 1;
+    int pattern = strpbrk(path, " #*,?[]{}") != NULL;
+    const char *pptr;
+    
+    for (it = s->first; it; it = it->next) {
+	/* If paths match or handler is wildcard */
+	if (!it->path || !strcmp(path, it->path) ||
+	    (pattern && lop_pattern_match(it->path, path))) {
+	    /* If types match or handler is wildcard */
+	    if (!it->typespec || !strcmp(types, it->typespec)) {
+		/* Send wildcard path to generic handler, expanded path
+		  to others.
+		*/
+		pptr = path;
+		if (it->path) pptr = it->path;
+		ret = it->handler(pptr, types, argv, argc, msg,
+				      it->user_data);
+
+	    } else if (lop_can_coerce_spec(types, it->typespec)) {
+		int i;
+		int opsize = 0;
+		char *ptr = msg->data;
+		char *data_co, *data_co_ptr;
+
+		argv = calloc(argc, sizeof(lop_arg *));
+		for (i=0; i<argc; i++) {
+		    opsize += lop_arg_size(it->typespec[i], ptr);
+		    ptr += lop_arg_size(types[i], ptr);
+		}
+
+		data_co = malloc(opsize);
+		data_co_ptr = data_co;
+		ptr = msg->data;
+		for (i=0; i<argc; i++) {
+		    argv[i] = (lop_arg *)data_co_ptr;
+		    lop_coerce(it->typespec[i], (lop_arg *)data_co_ptr,
+			      types[i], (lop_arg *)ptr);
+		    data_co_ptr += lop_arg_size(it->typespec[i], data_co_ptr);
+		    ptr += lop_arg_size(types[i], ptr);
+		}
+
+		/* Send wildcard path to generic handler, expanded path
+		  to others.
+		*/
+		pptr = path;
+		if (it->path) pptr = it->path;
+		ret = it->handler(pptr, it->typespec, argv, argc, msg,
+				      it->user_data);
+		free(argv);
+		free(data_co);
+		argv = NULL;
+	    }
+
+	    if (ret == 0 && !pattern) {
+		break;
+	    }
+	}
+    }
+
+    /* If we find no matching methods, check for protocol level stuff */
+    if (ret == 1) {
+	char *pos = strrchr(path, '/');
+
+	/* if its a method enumeration call */
+	if (pos && *(pos+1) == '\0') {
+	    lop_message reply = lop_message_new();
+	    int len = strlen(path);
+	    lop_strlist *sl = NULL, *slit, *slnew, *slend;
+
+	    if (!strcmp(types, "i")) {
+		lop_message_add_int32(reply, argv[0]->i);
+	    }
+	    lop_message_add_string(reply, path);
+
+	    for (it = s->first; it; it = it->next) {
+		/* If paths match */
+		if (it->path && !strncmp(path, it->path, len)) {
+		    char *tmp;
+		    char *sec;
+
+		    tmp = malloc(strlen(it->path + len) + 1);
+		    strcpy(tmp, it->path + len);
+		    sec = index(tmp, '/');
+		    if (sec) *sec = '\0';
+		    slend = sl;
+		    for (slit = sl; slit; slend = slit, slit = slit->next) {
+			if (!strcmp(slit->str, tmp)) {
+			    free(tmp);
+			    tmp = NULL;
+			    break;
+			}
+		    }
+		    if (tmp) {
+			slnew = calloc(1, sizeof(lop_strlist));
+			slnew->str = tmp;
+			slnew->next = NULL;
+			if (!slend) {
+			    sl = slnew;
+			} else {
+			    slend->next = slnew;
+			}
+		    }
+		}
+	    }
+
+	    slit = sl;
+	    while(slit) {
+		lop_message_add_string(reply, slit->str);
+		slnew = slit;
+		slit = slit->next;
+		free(slnew->str);
+		free(slnew);
+	    }
 #warning TODO
+	    //lop_send_message(src, "#reply", reply);
+	    lop_message_free(reply);
+	}
+    }
 }
 
 int lop_server_events_pending(lop_server s)
