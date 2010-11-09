@@ -5,7 +5,7 @@
 
 #include "lop/lop_osc_types.h"
 
-typedef void (*lop_err_handler)(int num, const char *msg, const char *path);
+typedef void (*lop_err_handler)(int num, const char *msg, const char *where);
 typedef void (*lop_send_handler)(const char *msg, size_t len, void *arg);
 
 struct _lop_method;

@@ -71,6 +71,8 @@ typedef void *lop_server;
  */
 typedef void (*lop_err_handler)(int num, const char *msg, const char *where);
 
+typedef void (*lop_send_handler)(const char *msg, size_t len, void *arg);
+
 /**
  * \brief A callback function to receive notifcation of matching message
  * arriving in the server.
