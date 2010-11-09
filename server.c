@@ -172,6 +172,16 @@ double lop_server_next_event_delay(lop_server s)
     return 100.0;
 }
 
+static void lop_send_message(lop_server s, const char *path, lop_message msg)
+{
+    const size_t data_len = lop_message_length(msg, path);
+    char *data = lop_message_serialise(msg, path, NULL, NULL);
+
+    s->send_h(data, data_len, s->send_h_arg);
+
+    free(data);
+}
+
 static void dispatch_method(lop_server s, const char *path,
     lop_message msg)
 {
@@ -292,8 +302,7 @@ static void dispatch_method(lop_server s, const char *path,
 		free(slnew->str);
 		free(slnew);
 	    }
-#warning TODO
-	    //lop_send_message(src, "#reply", reply);
+	    lop_send_message(s, "#reply", reply);
 	    lop_message_free(reply);
 	}
     }

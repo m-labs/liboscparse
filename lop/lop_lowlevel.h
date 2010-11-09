@@ -256,7 +256,22 @@ lop_arg **lop_message_get_argv(lop_message m);
  */
 size_t lop_message_length(lop_message m, const char *path);
 
-
+/**
+ * \brief  Serialise the lop_message object to an area of memory and return a
+ * pointer to the serialised form.  Opposite of lop_message_deserialise().
+ *
+ * \param m The message to be serialised
+ * \param path The path the message will be sent to
+ * \param to The address to serialise to, memory will be allocated if to is
+ * NULL.
+ * \param size If this pointer is non-NULL the size of the memory area
+ * will be written here
+ *
+ * The returned form is suitable to be sent over a low level OSC transport,
+ * having the correct endianess and bit-packed structure.
+ */
+void *lop_message_serialise(lop_message m, const char *path, void *to,
+    size_t *size);
 
 /**
  * \brief  Deserialise a raw OSC message and return a new lop_message object.
