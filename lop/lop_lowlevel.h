@@ -20,7 +20,7 @@
 #include "lop/lop_osc_types.h"
 
 /**
- * \file lop_lowlevel.h The liblo headerfile defining the low-level API
+ * \file lop_lowlevel.h The lop headerfile defining the low-level API
  * functions.
  */
 
@@ -35,11 +35,11 @@ extern "C" {
 #include "lop/lop_errors.h"
 
 /**
- * \defgroup liblolowlevel Low-level OSC API
+ * \defgroup loplowlevel Low-level OSC API
  *
  * Use these functions if you require more precise control over OSC message
  * contruction or handling that what is provided in the high-level functions
- * described in liblo.
+ * described in lop.
  * @{
  */
 
@@ -292,7 +292,7 @@ lop_message lop_message_deserialise(void *data, size_t size, int *result);
  * \brief  Dispatch a raw block of memory containing an OSC message.
  *
  * This is useful when a raw block of memory is available that is
- * structured as OSC, and you wish to use liblo to dispatch the
+ * structured as OSC, and you wish to use lop to dispatch the
  * message to a handler function as if it had been received over the
  * network.
  *

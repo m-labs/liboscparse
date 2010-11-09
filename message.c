@@ -134,7 +134,7 @@ int lop_message_add_varargs_internal(lop_message msg, const char *types,
 	    s = va_arg(ap, char *);
 #ifdef __GNUC__
 	    if (s == (char *)LOP_MARKER_A) {
-		fprintf(stderr, "liblo error: lop_message_add called with "
+		fprintf(stderr, "lop error: lop_message_add called with "
 			"invalid string pointer for arg %d, probably arg mismatch\n"
 		        "at %s:%d, exiting.\n", count, file, line);
 	    }
@@ -164,7 +164,7 @@ int lop_message_add_varargs_internal(lop_message msg, const char *types,
 	    s = va_arg(ap, char *);
 #ifdef __GNUC__
 	    if (s == (char *)LOP_MARKER_A) {
-		fprintf(stderr, "liblo error: lop_message_add called with "
+		fprintf(stderr, "lop error: lop_message_add called with "
 			"invalid symbol pointer for arg %d, probably arg mismatch\n"
 		        "at %s:%d, exiting.\n", count, file, line);
         va_end(ap);
@@ -202,7 +202,7 @@ int lop_message_add_varargs_internal(lop_message msg, const char *types,
 
 	default:
 		ret = -1; // unknown type
-	    fprintf(stderr, "liblo warning: unknown type '%c' at %s:%d\n",
+	    fprintf(stderr, "lop warning: unknown type '%c' at %s:%d\n",
 		    *(types-1), file, line);
 	    break;
 	}
@@ -211,7 +211,7 @@ int lop_message_add_varargs_internal(lop_message msg, const char *types,
     i = va_arg(ap, uint32_t);
     if (i != LOP_MARKER_A) {
 	ret = -2; // bad format/args
-	fprintf(stderr, "liblo error: lop_message_add or lop_message_add_varargs called with "
+	fprintf(stderr, "lop error: lop_message_add or lop_message_add_varargs called with "
 			"mismatching types and data at\n%s:%d, exiting.\n", file, line);
     va_end(ap);
     return ret;
@@ -219,7 +219,7 @@ int lop_message_add_varargs_internal(lop_message msg, const char *types,
     i = va_arg(ap, uint32_t);
     if (i != LOP_MARKER_B) {
 	ret = -2; // bad format/args
-	fprintf(stderr, "liblo error: lop_message_add or lop_message_add_varargs called with "
+	fprintf(stderr, "lop error: lop_message_add or lop_message_add_varargs called with "
 			"mismatching types and data at\n%s:%d, exiting.\n", file, line);
     }
 #endif
@@ -485,7 +485,7 @@ size_t lop_arg_size(lop_type type, void *data)
 	return lop_blobsize((lop_blob)data);
 
     default:
-	fprintf(stderr, "liblo warning: unhandled OSC type '%c' at %s:%d\n", type, __FILE__, __LINE__);
+	fprintf(stderr, "lop warning: unhandled OSC type '%c' at %s:%d\n", type, __FILE__, __LINE__);
 	return 0;
     }
 
@@ -658,7 +658,7 @@ void lop_arg_host_endian(lop_type type, void *data)
 	break;
 
     default:
-	fprintf(stderr, "liblo warning: unhandled OSC type '%c' at %s:%d\n",
+	fprintf(stderr, "lop warning: unhandled OSC type '%c' at %s:%d\n",
 		type, __FILE__, __LINE__);
 	break;
     }
@@ -692,7 +692,7 @@ void lop_arg_network_endian(lop_type type, void *data)
         break;
 
     default:
-        fprintf(stderr, "liblo warning: unhandled OSC type '%c' at %s:%d\n",
+        fprintf(stderr, "lop warning: unhandled OSC type '%c' at %s:%d\n",
                 type, __FILE__, __LINE__);
         break;
     }
@@ -882,7 +882,7 @@ void lop_message_pp(lop_message m)
     }
     putchar('\n');
     if (d != end) {
-	fprintf(stderr, "liblo warning: type and data do not match (off by %d) in message %p\n",
+	fprintf(stderr, "lop warning: type and data do not match (off by %d) in message %p\n",
             abs((char*)d - (char*)end), m);
     }
 }
@@ -987,7 +987,7 @@ void lop_arg_pp_internal(lop_type type, void *data, int bigendian)
 	break;
 
     default:
-	fprintf(stderr, "liblo warning: unhandled type: %c\n", type);
+	fprintf(stderr, "lop warning: unhandled type: %c\n", type);
 	break;
     }
 }
@@ -1035,7 +1035,7 @@ int lop_coerce(lop_type type_to, lop_arg *to, lop_type type_from, lop_arg *from)
 	    break;
 
 	default:
-	    fprintf(stderr, "liblo: bad coercion: %c -> %c\n", type_from,
+	    fprintf(stderr, "lop: bad coercion: %c -> %c\n", type_from,
 		    type_to);
 	    return 0;
 	}
@@ -1057,7 +1057,7 @@ lop_hires lop_hires_val(lop_type type, lop_arg *p)
     case LOP_DOUBLE:
 	return p->d;
     default:
-	fprintf(stderr, "liblo: hires val requested of non numerical type '%c' at %s:%d\n", type, __FILE__, __LINE__);
+	fprintf(stderr, "lop: hires val requested of non numerical type '%c' at %s:%d\n", type, __FILE__, __LINE__);
 	break;
     }
 

@@ -18,14 +18,14 @@
 #define LOP_OSC_TYPES_H
 
 /**
- * \file lop_osc_types.h A liblo header defining OSC-related types and
+ * \file lop_osc_types.h A lop header defining OSC-related types and
  * constants.
  */
 
 #include <stdint.h>
 
 /**
- * \addtogroup liblo
+ * \addtogroup lop
  * @{
  */
 
@@ -41,7 +41,7 @@ typedef struct {
 } lop_timetag;
 
 /**
- * \brief An enumeration of the OSC types liblo can send and receive.
+ * \brief An enumeration of the OSC types lop can send and receive.
  *
  * The value of the enumeration is the typechar used to tag messages
  */

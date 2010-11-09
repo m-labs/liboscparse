@@ -18,7 +18,7 @@
 #define LOP_TYPES_H
 
 /**
- * \file lop_types.h The liblo headerfile defining types used by this API.
+ * \file lop_types.h The lop headerfile defining types used by this API.
  */
 
 #ifdef __cplusplus
