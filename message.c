@@ -22,7 +22,10 @@
 
 #include "lop_types_internal.h"
 #include "lop_internal.h"
-#include "lo/lo.h"
+#include "lop/lop_lowlevel.h"
+#include "lop/lop_macros.h"
+#include "lop/lop_endian.h"
+#include "lop/lop_osc_types.h"
 
 #define LOP_DEF_TYPE_SIZE 8
 #define LOP_DEF_DATA_SIZE 8
@@ -71,7 +74,6 @@ lop_message lop_message_new()
     m->data = NULL;
     m->datalen = 0;
     m->datasize = 0;
-    m->source = NULL;
     m->argv = NULL;
     m->ts = LOP_TT_IMMEDIATE;
 
@@ -138,12 +140,10 @@ int lop_message_add_varargs_internal(lop_message msg, const char *types,
 #endif
 	    lop_message_add_string(msg, s);
 	    break;
-
 	case LOP_BLOB:
 	    b = va_arg(ap, lop_blob);
 	    lop_message_add_blob(msg, b);
 	    break;
-
 	case LOP_INT64:
 	    i64 = va_arg(ap, int64_t);
 	    lop_message_add_int64(msg, i64);
@@ -697,11 +697,6 @@ void lop_arg_network_endian(lop_type type, void *data)
     }
 }
 
-lop_address lop_message_get_source(lop_message m)
-{
-    return m->source;
-}
-
 lop_timetag lop_message_get_timestamp(lop_message m)
 {
     return m->ts;
@@ -796,7 +791,6 @@ lop_message lop_message_deserialise(void *data, size_t size, int *result)
     msg->data = NULL;
     msg->datalen = 0;
     msg->datasize = 0;
-    msg->source = NULL;
     msg->argv = NULL;
     msg->ts = LOP_TT_IMMEDIATE;
 

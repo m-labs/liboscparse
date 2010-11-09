@@ -48,14 +48,6 @@ typedef struct _lop_server {
 	void		        *queued;
 } *lop_server;
 
-typedef struct _lop_bundle {
-	size_t      size;
-	size_t	    len;
-	lop_timetag  ts;
-	lop_message *msgs;
-	char      **paths;
-} *lop_bundle;
-
 typedef struct _lop_strlist {
 	char *str;
 	struct _lop_strlist *next;

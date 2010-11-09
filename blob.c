@@ -14,22 +14,51 @@
  *  $Id$
  */
 
-#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "lop_types_internal.h"
 #include "lop/lop_lowlevel.h"
 
-void lop_method_pp(lop_method m)
+lop_blob lop_blob_new(int32_t size, const void *data)
 {
-    lop_method_pp_prefix(m, "");
+    lop_blob b;
+
+    if (size < 1) {
+	return NULL;
+    }
+
+    b = malloc(sizeof(size) + size);
+
+    b->size = size;
+
+    if (data) {
+	memcpy((char*)b + sizeof(uint32_t), data, size);
+    }
+
+    return b;
 }
 
-void lop_method_pp_prefix(lop_method m, const char *p)
+void lop_blob_free(lop_blob b)
 {
-    printf("%spath:      %s\n", p, m->path);
-    printf("%stypespec:  %s\n", p, m->typespec);
-    printf("%shandler:   %p\n", p, m->handler);
-    printf("%suser-data: %p\n", p, m->user_data);
+    free(b);
+}
+
+uint32_t lop_blob_datasize(lop_blob b)
+{
+    return b->size;
+}
+
+void *lop_blob_dataptr(lop_blob b)
+{
+    return (char*)b + sizeof(uint32_t);
+}
+
+uint32_t lop_blobsize(lop_blob b)
+{
+    const uint32_t len = sizeof(uint32_t) + b->size;
+
+    return 4 * (len / 4 + 1);
 }
 
 /* vi:set ts=8 sts=4 sw=4: */
