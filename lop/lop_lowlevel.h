@@ -29,12 +29,7 @@ extern "C" {
 #endif
 
 #include <stdarg.h>
-#ifdef _MSC_VER
-#define ssize_t SSIZE_T
-#define uint32_t unsigned __int32
-#else
 #include <stdint.h>
-#endif
 
 #include "lop/lop_types.h"
 #include "lop/lop_errors.h"
@@ -485,7 +480,7 @@ void lop_arg_network_endian(lop_type type, void *data);
 void lop_message_pp(lop_message m);
 
 /** \brief Pretty-print a set of typed arguments.
- * \param type A type string in the form provided to lop_send().
+ * \param type A type string.
  * \param data An OSC data pointer, like that provided in the
  * lop_method_handler.
  */

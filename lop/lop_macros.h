@@ -49,27 +49,12 @@ extern "C" {
     lop_message_add_internal(msg, __FILE__, __LINE__, types,   \
                             LOP_MARKER_A, LOP_MARKER_B)
 
-#define lop_send(targ, path, types...) \
-        lop_send_internal(targ, __FILE__, __LINE__, path, types, \
-			 LOP_MARKER_A, LOP_MARKER_B)
-
-#define lop_send_timestamped(targ, ts, path, types...) \
-        lop_send_timestamped_internal(targ, __FILE__, __LINE__, ts, path, \
-		       	             types, LOP_MARKER_A, LOP_MARKER_B)
-
-#define lop_send_from(targ, from, ts, path, types...) \
-        lop_send_from_internal(targ, from, __FILE__, __LINE__, ts, path, \
-		       	             types, LOP_MARKER_A, LOP_MARKER_B)
-
 #else
 
 /* In non-GCC compilers, there is no support for variable-argument
  * macros, so provide "internal" vararg functions directly instead. */
 
 int lop_message_add(lop_message msg, const char *types, ...);
-int lop_send(lop_address targ, const char *path, const char *types, ...);
-int lop_send_timestamped(lop_address targ, lop_timetag ts, const char *path, const char *types, ...);
-int lop_send_from(lop_address targ, lop_server from, lop_timetag ts, const char *path, const char *types, ...);
 
 #endif
 

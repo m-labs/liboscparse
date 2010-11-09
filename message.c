@@ -133,7 +133,7 @@ int lop_message_add_varargs_internal(lop_message msg, const char *types,
 	    s = va_arg(ap, char *);
 #ifdef __GNUC__
 	    if (s == (char *)LOP_MARKER_A) {
-		fprintf(stderr, "liblo error: lop_send or lop_message_add called with "
+		fprintf(stderr, "liblo error: lop_message_add called with "
 			"invalid string pointer for arg %d, probably arg mismatch\n"
 		        "at %s:%d, exiting.\n", count, file, line);
 	    }
@@ -163,7 +163,7 @@ int lop_message_add_varargs_internal(lop_message msg, const char *types,
 	    s = va_arg(ap, char *);
 #ifdef __GNUC__
 	    if (s == (char *)LOP_MARKER_A) {
-		fprintf(stderr, "liblo error: lop_send or lop_message_add called with "
+		fprintf(stderr, "liblo error: lop_message_add called with "
 			"invalid symbol pointer for arg %d, probably arg mismatch\n"
 		        "at %s:%d, exiting.\n", count, file, line);
         va_end(ap);
@@ -210,7 +210,7 @@ int lop_message_add_varargs_internal(lop_message msg, const char *types,
     i = va_arg(ap, uint32_t);
     if (i != LOP_MARKER_A) {
 	ret = -2; // bad format/args
-	fprintf(stderr, "liblo error: lop_send, lop_message_add, or lop_message_add_varargs called with "
+	fprintf(stderr, "liblo error: lop_message_add or lop_message_add_varargs called with "
 			"mismatching types and data at\n%s:%d, exiting.\n", file, line);
     va_end(ap);
     return ret;
@@ -218,7 +218,7 @@ int lop_message_add_varargs_internal(lop_message msg, const char *types,
     i = va_arg(ap, uint32_t);
     if (i != LOP_MARKER_B) {
 	ret = -2; // bad format/args
-	fprintf(stderr, "liblo error: lop_send, lop_message_add, or lop_message_add_varargs called with "
+	fprintf(stderr, "liblo error: lop_message_add or lop_message_add_varargs called with "
 			"mismatching types and data at\n%s:%d, exiting.\n", file, line);
     }
 #endif

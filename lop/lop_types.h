@@ -28,13 +28,6 @@ extern "C" {
 #include "lop/lop_osc_types.h"
 
 /**
- * \brief A reference to an OSC service.
- *
- * Created by calls to lop_address_new() or lop_address_new_from_url().
- */
-typedef void *lop_address;
-
-/**
  * \brief A object to store an opaque binary data object.
  *
  * Can be passed over OSC using the 'b' type. Created by calls to lop_blob_new().
@@ -80,7 +73,7 @@ typedef void (*lop_err_handler)(int num, const char *msg, const char *where);
 
 /**
  * \brief A callback function to receive notifcation of matching message
- * arriving in the server or server thread.
+ * arriving in the server.
  *
  * The return value tells the method dispatcher whether this handler
  * has dealt with the message correctly: a return value of 0 indicates
