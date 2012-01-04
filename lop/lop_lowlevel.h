@@ -46,7 +46,7 @@ extern "C" {
 /**
  * \brief Create a new lop_message object
  */
-lop_message lop_message_new();
+lop_message lop_message_new(void);
 
 /**
  * \brief Free memory allocated by lop_message_new() and any subsequent

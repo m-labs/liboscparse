@@ -60,7 +60,7 @@ void lop_arg_pp_internal(lop_type type, void *data, int bigendian);
     while (b > a) {a *= 2;}
 #endif
 
-lop_message lop_message_new()
+lop_message lop_message_new(void)
 {
     lop_message m = malloc(sizeof(struct _lop_message));
     if (!m) {
